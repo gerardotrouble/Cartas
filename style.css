@@ -59,37 +59,6 @@ body {
    padding: clamp(20px, 6vw, 100px);
 }
 
-/* Entre escritorio y tablet: los 3 sobres se van achicando progresivamente
-   para que quepan sin cortarse antes de pasar a una columna. */
-@media (max-width: 1300px) {
-   .valentines-day {
-      transform: scale(.85);
-   }
-}
-
-@media (max-width: 1050px) {
-   .valentines-day {
-      transform: scale(.7);
-   }
-}
-
-@media(max-width: 768px) {
-   .box-cart {
-      flex-direction: column;
-      gap: 30px;
-      padding: 40px 20px;
-   }
-
-   .valentines-day {
-      transform: scale(1);
-      /* En columna los sobres ya no tienen vecinos a los lados, así
-         que solo hace falta margen vertical para separarlos entre
-         ellos; el gap del contenedor suma el resto. */
-      margin: 150px 10px 90px;
-   }
-}
-
-
 /* Botón para regresar al sobre. Se muestra únicamente al abrir la carta. */
 .back-button {
    position: absolute;
@@ -331,7 +300,9 @@ body {
    }
 
    body {
-      overflow: hidden;
+      /* Se permite hacer scroll para poder ver los 3 sobres en
+         pantallas pequeñas (antes "overflow: hidden" lo bloqueaba). */
+      overflow-y: auto;
    }
 
    .letter-card {
@@ -398,11 +369,6 @@ body {
       font-size: clamp(1.05rem, 4.2vw, 1.35rem);
       line-height: 1.12;
    }
-
-   /* Evita que la portada sobresalga del viewport en teléfonos. */
-   .valentines-day {
-      transform: scale(.82);
-   }
 }
 
 /* Teléfonos pequeños */
@@ -415,10 +381,6 @@ body {
    .letter-card p {
       font-size: clamp(1rem, 4vw, 1.2rem);
       line-height: 1.08;
-   }
-
-   .valentines-day {
-      transform: scale(.72);
    }
 }
 
@@ -479,3 +441,77 @@ body {
    }
 }
 
+
+/* ==========================================================
+   Sobres en versión responsiva (hasta 1300px)
+
+   Este bloque va al FINAL a propósito: la regla base
+   ".valentines-day" (arriba) define márgenes grandes para
+   escritorio, y si este bloque estuviera antes, esos márgenes
+   lo pisarían y los sobres quedarían muy separados.
+
+   Cómo funciona:
+   - "transform: scale()" achica el dibujo pero NO el espacio que
+     ocupa en el layout. Por eso los márgenes se calculan con la
+     misma escala (--s) para que el espacio reservado sea justo el
+     tamaño real del dibujo del sobre.
+   - El dibujo completo mide ~360px de ancho x ~405px de alto
+     (la caja "real" del elemento solo mide 180 x 184).
+   - En columna se usa flex-wrap: nowrap. Con "wrap" el sobre
+     quedaba pegado a la izquierda y se cortaba por la derecha.
+   ========================================================== */
+@media (max-width: 1300px) {
+   .box-cart {
+      --s: .8;
+      /* escala de cada sobre (respaldo si el navegador no soporta trigonometría en CSS) */
+      --gap: 20px;
+      /* separación visible entre sobres */
+      flex-direction: row;
+      flex-wrap: wrap;
+      gap: var(--gap);
+      padding: 12px;
+   }
+
+   .valentines-day {
+      transform: scale(var(--s));
+      margin:
+         calc(227px * var(--s) - 92px) calc(180px * var(--s) - 90px) calc(178px * var(--s) - 92px);
+   }
+}
+
+/* Tablet: los 3 sobres en una sola fila */
+@media (max-width: 1000px) {
+   .box-cart {
+      --s: .6;
+   }
+}
+
+/* Móvil: los 3 sobres en una sola columna, centrados */
+@media (max-width: 768px) {
+   .box-cart {
+      --s: .65;
+      --gap: 12px;
+      flex-direction: column;
+      flex-wrap: nowrap;
+   }
+}
+
+/* Navegadores modernos: la escala se calcula sola según la pantalla.
+   - Tablet/escritorio chico: el ancho de los 3 sobres se ajusta al ancho disponible.
+   - Móvil: se ajusta al ancho y, si se puede, también al alto para ver los 3 sobres
+     completos sin hacer scroll (nunca baja de .6 para que el texto siga legible). */
+@supports (width: calc(1px * tan(atan2(10px, 1px)))) {
+   @media (max-width: 1300px) {
+      .box-cart {
+         --vw: tan(atan2(100vw, 1px));
+         --vh: tan(atan2(100svh, 1px));
+         --s: clamp(.5, calc((var(--vw) - 90) / 1080), 1);
+      }
+   }
+
+   @media (max-width: 768px) {
+      .box-cart {
+         --s: clamp(.6, min(calc((var(--vw) - 60) / 360), calc((var(--vh) - 76) / 1215)), 1);
+      }
+   }
+}
