@@ -1,0 +1,481 @@
+@import url('https://fonts.googleapis.com/css2?family=Great+Vibes&family=Jim+Nightshade&family=Sacramento&family=Tangerine:wght@400;700&display=swap');
+
+/* ==========================================================
+   Variables y configuración base
+   ========================================================== */
+:root {
+   --page-padding: 12px;
+   --card-max-width: 800px;
+   --card-height: 550px;
+}
+
+* {
+   box-sizing: border-box;
+}
+
+html,
+body {
+   width: 100%;
+   min-height: 100%;
+   margin: 0;
+}
+
+body {
+   display: flex;
+   align-items: center;
+   justify-content: center;
+   min-height: 100vh;
+   min-height: 100dvh;
+   padding: var(--page-padding);
+   font-family: "Great Vibes", cursive;
+   background-color: #f1e3d3;
+   overflow-x: hidden;
+   overflow-y: auto;
+}
+
+/* ==========================================================
+   Carta
+   En escritorio se mantiene la composición original.
+   ========================================================== */
+.letter-card {
+   height: 500px;
+   width: min(var(--card-max-width), calc(100vw - (var(--page-padding) * 2)));
+   margin: 5em auto;
+   position: fixed;
+   top: -15px;
+   left: 25%;
+   display: flex;
+   visibility: hidden;
+   transform: none;
+}
+
+.box-cart{
+   width: 100%;
+   display: flex;
+   flex-wrap: wrap;
+   gap: clamp(16px, 3vw, 40px);
+   justify-content: center;
+   align-items: center;
+   padding: clamp(20px, 6vw, 100px);
+}
+
+/* Entre escritorio y tablet: los 3 sobres se van achicando progresivamente
+   para que quepan sin cortarse antes de pasar a una columna. */
+@media (max-width: 1300px) {
+   .valentines-day {
+      transform: scale(.85);
+   }
+}
+
+@media (max-width: 1050px) {
+   .valentines-day {
+      transform: scale(.7);
+   }
+}
+
+@media(max-width: 768px) {
+   .box-cart {
+      flex-direction: column;
+      gap: 30px;
+      padding: 40px 20px;
+   }
+
+   .valentines-day {
+      transform: scale(1);
+      /* En columna los sobres ya no tienen vecinos a los lados, así
+         que solo hace falta margen vertical para separarlos entre
+         ellos; el gap del contenedor suma el resto. */
+      margin: 150px 10px 90px;
+   }
+}
+
+
+/* Botón para regresar al sobre. Se muestra únicamente al abrir la carta. */
+.back-button {
+   position: absolute;
+   top: 14px;
+   right: 14px;
+   z-index: 20;
+   border: 1px solid rgba(224, 25, 17, .25);
+   border-radius: 999px;
+   padding: 8px 14px;
+   background: rgba(255, 255, 255, .92);
+   color: #b51b16;
+   font-family: Arial, sans-serif;
+   font-size: 14px;
+   font-weight: 600;
+   line-height: 1;
+   cursor: pointer;
+   box-shadow: 0 3px 10px rgba(0, 0, 0, .12);
+   transition: transform .2s ease, box-shadow .2s ease, background-color .2s ease;
+}
+
+.back-button:hover {
+   background: #fff;
+   transform: translateY(-1px);
+   box-shadow: 0 5px 14px rgba(0, 0, 0, .16);
+}
+
+.back-button:focus-visible {
+   outline: 3px solid rgba(224, 25, 17, .3);
+   outline-offset: 2px;
+}
+
+.letter-card h2 {
+   font-size: 3em;
+   margin: 0;
+   color: pink;
+   text-align: center;
+}
+
+.letter-card p {
+   font-size: 1.5em;
+   text-align: justify;
+   padding-left: 30px;
+   padding-right: 30px;
+}
+
+.side {
+   background: #eee;
+   height: var(--card-height);
+   width: 400px;
+   min-width: 0;
+   padding: 10px;
+   box-sizing: content-box;
+}
+
+.side.one {
+   width: 320px;
+   flex: 0 0 40%;
+   transform: skew(10deg, 20deg);
+   background: linear-gradient(90deg, #fff, #fff 40%, #ddd);
+}
+
+.side.two {
+   flex: 1 1 60%;
+   transform: skew(10deg, -15deg);
+   background: linear-gradient(-90deg, #fff, #fff 40%, #f0f0f0);
+   overflow-y: auto;
+   overflow-x: hidden;
+   overscroll-behavior: contain;
+   -webkit-overflow-scrolling: touch;
+}
+
+/* ==========================================================
+   Sobre / portada
+   ========================================================== */
+.valentines-day {
+   position: relative;
+   cursor: pointer;
+   flex: 0 0 auto;
+   touch-action: manipulation;
+   /* El dibujo del sobre/corazón se pinta con pseudo-elementos en
+      posición absoluta que sobresalen bastante más allá de la caja
+      "real" del elemento (el navegador solo mide ~180x180px, el
+      dibujo completo ocupa casi el doble). Estos márgenes reservan
+      ese espacio para que los sobres no se encimen entre sí. */
+   margin: 190px 120px 110px;
+}
+
+.envelope {
+   position: relative;
+   filter: drop-shadow(0 0 25px rgba(0, 0, 0, .3));
+}
+
+.envelope:before {
+   content: "";
+   position: absolute;
+   width: 254px;
+   height: 254px;
+   background-color: #ff9494;
+   transform: rotate(-45deg);
+   border-radius: 0 15px 0 0;
+   left: -37px;
+   top: -82px;
+}
+
+.envelope:after {
+   content: "";
+   position: absolute;
+   background-color: #ff9494;
+   width: 360px;
+   height: 225px;
+   left: -90px;
+   top: 45px;
+}
+
+.heart {
+   position: relative;
+   background-color: #e01911;
+   display: inline-block;
+   height: 180px;
+   top: 50px;
+   left: 0;
+   transform: rotate(-45deg);
+   width: 180px;
+   filter: drop-shadow(0 -10px 25px rgba(0, 0, 0, .3));
+   transition: .5s;
+}
+
+.heart:before,
+.heart:after {
+   content: "";
+   background-color: #e01911;
+   border-radius: 50%;
+   height: 180px;
+   width: 180px;
+   position: absolute;
+}
+
+.heart:before {
+   top: -100px;
+   left: 0;
+}
+
+.heart:after {
+   left: 100px;
+   top: 0;
+}
+
+.front {
+   position: absolute;
+   width: 0;
+   height: 0;
+   border-right: 190px solid #fbd2d2;
+   border-top: 113px solid transparent;
+   border-bottom: 113px solid transparent;
+   top: 44px;
+   left: 80px;
+   z-index: 4;
+}
+
+.front:before {
+   content: "";
+   position: absolute;
+   width: 0;
+   height: 0;
+   border-left: 190px solid #fbd2d2;
+   border-top: 113px solid transparent;
+   border-bottom: 113px solid transparent;
+   top: -113px;
+   left: -170px;
+}
+
+.front:after {
+   width: 0;
+   height: 0;
+   position: absolute;
+   content: "";
+   border-bottom: 150px solid #fce7e9;
+   border-right: 180px solid transparent;
+   border-left: 180px solid transparent;
+   top: -36px;
+   left: -170px;
+}
+
+.text {
+   position: absolute;
+   font-family: Arial, sans-serif;
+   letter-spacing: 5px;
+   text-align: center;
+   color: white;
+   z-index: 2;
+   top: 80px;
+   left: 15px;
+   transition: .5s;
+}
+
+.valentines-day:hover .heart {
+   transform: translateY(-50px) rotate(-45deg);
+}
+
+.valentines-day:hover .text {
+   transform: translateY(-50px);
+}
+
+/* ==========================================================
+   Tablet
+   ========================================================== */
+@media (max-width: 900px) {
+   :root {
+      --page-padding: 10px;
+   }
+
+   .letter-card {
+      top: 50%;
+      left: 50%;
+      height: min(550px, calc(100dvh - 24px));
+      margin: 0;
+      transform: translate(-50%, -50%);
+   }
+
+   .side {
+      height: 100%;
+      box-sizing: border-box;
+   }
+
+   .letter-card p {
+      padding-left: 22px;
+      padding-right: 22px;
+   }
+}
+
+/* ==========================================================
+   Móvil
+   Se mantiene el formato de carta de dos paneles, pero los
+   contenedores, tipografía y espacios se adaptan al viewport.
+   ========================================================== */
+@media (max-width: 600px) {
+   :root {
+      --page-padding: 8px;
+   }
+
+   body {
+      overflow: hidden;
+   }
+
+   .letter-card {
+      width: calc(100vw - (var(--page-padding) * 2));
+      height: min(620px, calc(100dvh - 16px));
+      top: 50%;
+   }
+
+   .side.one {
+      flex: 0 0 34%;
+      width: 34%;
+      transform: skew(7deg, 15deg);
+   }
+
+   .side.two {
+      flex: 0 0 66%;
+      width: 66%;
+      transform: skew(7deg, -10deg);
+      padding: 8px;
+   }
+
+   
+/* Botón para regresar al sobre. Se muestra únicamente al abrir la carta. */
+.back-button {
+   position: absolute;
+   top: 14px;
+   right: 14px;
+   z-index: 20;
+   border: 1px solid rgba(224, 25, 17, .25);
+   border-radius: 999px;
+   padding: 8px 14px;
+   background: rgba(255, 255, 255, .92);
+   color: #b51b16;
+   font-family: Arial, sans-serif;
+   font-size: 14px;
+   font-weight: 600;
+   line-height: 1;
+   cursor: pointer;
+   box-shadow: 0 3px 10px rgba(0, 0, 0, .12);
+   transition: transform .2s ease, box-shadow .2s ease, background-color .2s ease;
+}
+
+.back-button:hover {
+   background: #fff;
+   transform: translateY(-1px);
+   box-shadow: 0 5px 14px rgba(0, 0, 0, .16);
+}
+
+.back-button:focus-visible {
+   outline: 3px solid rgba(224, 25, 17, .3);
+   outline-offset: 2px;
+}
+
+.letter-card h2 {
+      font-size: clamp(2rem, 9vw, 2.6rem);
+      line-height: 1;
+   }
+
+   .letter-card p {
+      margin-top: .8em;
+      margin-bottom: .8em;
+      padding-left: clamp(8px, 3vw, 18px);
+      padding-right: clamp(8px, 3vw, 18px);
+      font-size: clamp(1.05rem, 4.2vw, 1.35rem);
+      line-height: 1.12;
+   }
+
+   /* Evita que la portada sobresalga del viewport en teléfonos. */
+   .valentines-day {
+      transform: scale(.82);
+   }
+}
+
+/* Teléfonos pequeños */
+@media (max-width: 380px) {
+   .letter-card {
+      width: calc(100vw - 10px);
+      height: calc(100dvh - 10px);
+   }
+
+   .letter-card p {
+      font-size: clamp(1rem, 4vw, 1.2rem);
+      line-height: 1.08;
+   }
+
+   .valentines-day {
+      transform: scale(.72);
+   }
+}
+
+/* Pantallas con poca altura: priorizamos que la carta sea usable. */
+@media (max-height: 600px) and (max-width: 600px) {
+   .letter-card {
+      height: calc(100dvh - 8px);
+   }
+
+
+   
+/* Botón para regresar al sobre. Se muestra únicamente al abrir la carta. */
+.back-button {
+   position: absolute;
+   top: 14px;
+   right: 14px;
+   z-index: 20;
+   border: 1px solid rgba(224, 25, 17, .25);
+   border-radius: 999px;
+   padding: 8px 14px;
+   background: rgba(255, 255, 255, .92);
+   color: #b51b16;
+   font-family: Arial, sans-serif;
+   font-size: 14px;
+   font-weight: 600;
+   line-height: 1;
+   cursor: pointer;
+   box-shadow: 0 3px 10px rgba(0, 0, 0, .12);
+   transition: transform .2s ease, box-shadow .2s ease, background-color .2s ease;
+}
+
+.back-button:hover {
+   background: #fff;
+   transform: translateY(-1px);
+   box-shadow: 0 5px 14px rgba(0, 0, 0, .16);
+}
+
+.back-button:focus-visible {
+   outline: 3px solid rgba(224, 25, 17, .3);
+   outline-offset: 2px;
+}
+
+.letter-card h2 {
+      font-size: 2rem;
+   }
+
+   .letter-card p {
+      font-size: 1rem;
+   }
+}
+
+/* Reduce movimiento para usuarios que lo soliciten en el sistema. */
+@media (prefers-reduced-motion: reduce) {
+   .heart,
+   .text,
+   .back-button {
+      transition: none;
+   }
+}
+
